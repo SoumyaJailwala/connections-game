@@ -1,12 +1,18 @@
 import Board from "./components/Board"
 import SolvedGroup from "./components/SolvedGroup"
 import { useState } from "react"
-import { groups } from "./data/gameData"
 
 export default function App() {
   const [selected, setSelected] = useState([])
   const [solvedGroups, setSolvedGroups] = useState([])
-  const allTiles = groups.flatMap(group => group.items)
+
+
+  const [groups, setGroups] = useState([])
+  const [content, setContent] = useState("")
+  const [loading, setLoading] = useState(false)
+
+    const allTiles = groups.flatMap(group => group.items)
+
 
   function toggleTile(tile) {
     if (selected.includes(tile)) {
@@ -37,9 +43,47 @@ export default function App() {
     }
   }
 
+
+  async function generateGroups() {
+    if (!content.trim()) return
+    setLoading(true)
+    try {
+      const res = await fetch("http://localhost:3001/api/generate-groups", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content })
+      })
+      const data = await res.json()
+      const groupsWithIds = data.map((g, i) => ({ ...g, id: i }))
+      setGroups(groupsWithIds)
+      setSolvedGroups([])
+      setSelected([])
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-purple-100">
       <h1 className="text-3xl font-bold">Connections Game</h1>
+
+      <textarea
+        className="border p-2 w-full max-w-md mb-2"
+        rows={5}
+        placeholder="Paste study material here..."
+        value={content}
+        onChange={e => setContent(e.target.value)}
+      />
+
+      <button
+        onClick={generateGroups}
+        disabled={loading}
+        className="mb-4 px-6 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-900 transition"
+      >
+        {loading ? "Generating..." : "Generate Game"}
+      </button>
 
       <div>
 

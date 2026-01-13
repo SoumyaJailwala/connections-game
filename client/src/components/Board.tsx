@@ -1,7 +1,6 @@
 import Tile from './Tile';
-import {groups} from '../data/gameData';
 
-export default function Board({tiles, selected, onTileClick, solvedGroups}: {tiles: string[]; selected: string[]; onTileClick: (index: string) => void, solvedGroups: number[]}) {
+export default function Board({tiles, selected, onTileClick, solvedGroups, groups}: {tiles: string[]; selected: string[]; onTileClick: (index: string) => void, solvedGroups: number[], groups: {id: number; category: string; items: string[]}[]}) {
     return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
       {tiles.map(tile => {
