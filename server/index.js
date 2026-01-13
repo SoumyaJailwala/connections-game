@@ -11,7 +11,7 @@ const client = new OpenAI({
 })
 
 app.post("/api/generate-groups", async (req, res) => {
-  const { topic } = req.body
+  const { content } = req.body
 
   try {
     const completion = await client.chat.completions.create({
@@ -19,7 +19,7 @@ app.post("/api/generate-groups", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You generate structured Connections puzzles."
+          content: "You generate structured Connections-style puzzles."
         },
         {
           role: "user",
@@ -32,8 +32,8 @@ Rules:
 - No overlap
 - Return ONLY JSON
 
-Topic:
-${topic}
+Reference material:
+${content}
           `
         }
       ],
@@ -45,7 +45,8 @@ ${topic}
 
     res.json(groups)
   } catch (err) {
-    res.status(500).json({ error: "Failed to generate puzzle" })
+    console.error(err)
+    res.status(500).json({ error: "Failed to generate groups" })
   }
 })
 
