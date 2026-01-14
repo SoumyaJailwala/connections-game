@@ -96,6 +96,7 @@ export default function App() {
       <Board tiles={allTiles}
         selected={selected}
         solvedGroups={solvedGroups}
+        groups={groups}
         onTileClick={toggleTile} />
       <button
         onClick={submitSelection}
